@@ -1,28 +1,17 @@
+import React from 'react';
+import './index.css';
+import { hydrateRoot } from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import * as React from "react";
-import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import "./index.css";
-import Home from './pages/Home'
+import { BrowserRouter } from 'react-router-dom';
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App/>
-  },
-    {
-    path: "/home",
-    element: <Home/>
-  },
-]);
 
-ReactDOM.hydrateRoot(document.getElementById('root'), <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>);
+hydrateRoot(
+    document.getElementById('root'),
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
