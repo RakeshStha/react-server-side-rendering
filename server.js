@@ -1,25 +1,17 @@
-require('@babel/register')({
+require("@babel/register")({
   presets: [
-    '@babel/preset-env',
-    ['@babel/preset-react', { runtime: 'automatic' }],
+    "@babel/preset-env",
+    ["@babel/preset-react", { runtime: "automatic" }],
   ],
-  plugins: [
-    [
-      'transform-assets',
-      {
-        extensions: ['css', 'svg'],
-        name: 'static/media/[name].6ce24c58023cc2f8fd88fe9d219db6c6.[ext]',
-      },
-    ],
-  ],
+  plugins: [["transform-assets"]],
 });
-const { StaticRouter} = require('react-router-dom/server');
+const { StaticRouter } = require("react-router-dom/server");
 const React = require("react");
-const ReactDOMServer = require('react-dom/server');
-const App = require('./src/App').default
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
+const ReactDOMServer = require("react-dom/server");
+const App = require("./src/App").default;
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -29,23 +21,21 @@ const router = express.Router();
 
 app.use((req, res, next) => {
   if (/\.js|\.css/.test(req.path)) {
-    res.redirect("/build+req.path")
+    res.redirect("/build+req.path");
   } else {
-    next()
+    next();
   }
-})
+});
 
-
-app.get('*', (req, res, next) => {
-
-    const context = {};
+app.get("*", (req, res, next) => {
+  const context = {};
   const reactApp = ReactDOMServer.renderToString(
- <StaticRouter location={req.url} context={context}>
+    <StaticRouter location={req.url} context={context}>
       <App />
     </StaticRouter>
   );
-  const indexFile = path.resolve('build/index.html');
-  fs.readFile(indexFile, 'utf8', (err, data) => {
+  const indexFile = path.resolve("build/index.html");
+  fs.readFile(indexFile, "utf8", (err, data) => {
     if (err) {
       const errMsg = `There is an error: ${err}`;
       console.error(errMsg);
@@ -58,10 +48,10 @@ app.get('*', (req, res, next) => {
   });
 });
 
-router.use(express.static(path.resolve(__dirname, '../build')));
+router.use(express.static(path.resolve(__dirname, "../build")));
 
-app.use(router)
+app.use(router);
 
 app.listen(8080, () =>
-  console.log('Express server is running on localhost:8080')
+  console.log("Express server is running on localhost:8080")
 );
