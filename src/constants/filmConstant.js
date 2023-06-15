@@ -1,6 +1,6 @@
 export const filmsConstants = {
 
-    API: '/films',
+    API: '/titles',
 
     FETCH_ALL_PROCESSING: 'FETCH_FILMS_PROCESSING',
     FETCH_ALL_SUCCESS: 'FETCH_FILMS_SUCCESS',
