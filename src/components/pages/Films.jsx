@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { getFilms } from "../../actions/filmActions";
 import Loader from "../shared/loader/Loader";
+import SEO from "../shared/SEO";
 
 const Films = () => {
   const [data, setData] = useState([]);
@@ -26,6 +27,12 @@ const Films = () => {
 
   return (
     <div className="container my-5">
+      <SEO
+        title={"Films"}
+        description={"List of films"}
+        name={"This is films list"}
+        type={"article"}
+      />
       {loading ? (
         <Loader />
       ) : (
