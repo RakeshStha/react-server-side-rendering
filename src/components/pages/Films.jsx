@@ -27,12 +27,12 @@ const Films = () => {
 
   return (
     <div className="container my-5">
-      {/* <SEO
+      <SEO
         title={"Films"}
         description={"List of films"}
         name={"This is films list"}
         type={"article"}
-      /> */}
+      />
       {loading ? (
         <Loader />
       ) : (

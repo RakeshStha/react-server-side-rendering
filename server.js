@@ -15,77 +15,92 @@ const App = require("./src/App").default;
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const compression = require('compression');
-// const Helmet = require('react-helmet')
-const { HelmetProvider, Helmet } = require('react-helmet-async')
+const compression = require("compression");
+const { HelmetProvider } = require("react-helmet-async");
 
 const app = express();
 
 const router = express.Router();
 
-// app.use('/build', express.static('build'));
-
 // compress all responses
 app.use(compression());
 
-app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
+// Serve static files from the "build" folder
+app.use(express.static(path.join(__dirname, "build")));
 
-// app.use((req, res, next) => {
-//   if (/\.js|\.css/.test(req.path)) {
-//     res.redirect("/build+req.path");
-//   } else {
-//     next();
-//   }
-// });
+// Serve the static files from the "build/static" folder
+app.use(express.static(path.join(__dirname, "./build", "static")));
 
 app.get("*", (req, res, next) => {
   const context = {};
 
   const store = createStore(rootReducer);
-  const helmetContext ={}
+  const helmetContext = {};
 
   const reactApp = ReactDOMServer.renderToString(
-    <StaticRouter location={req.url} context={context}>
-      <Provider store={store}>
-             <HelmetProvider context={helmetContext}>
+    <HelmetProvider context={helmetContext}>
+      <StaticRouter location={req.url} context={context}>
+        <Provider store={store}>
           <App />
-          </HelmetProvider>
-      </Provider>
-    </StaticRouter>
+        </Provider>
+      </StaticRouter>
+    </HelmetProvider>
   );
   // Grab the initial state from our Redux store
-  const preloadedState = store.getState();
-  //  const helmet = Helmet.renderStatic()
+  const preloadedState = JSON.stringify(store.getState()).replace(
+    /</g,
+    "\\u003c"
+  );
 
-    // Extract the head tags
+  // Extract the head tags
   const { helmet } = helmetContext;
-  const headTags = helmet && helmet.title.toString() + helmet.meta.toString() + helmet.link.toString();
-
+  // const headTags = helmet && helmet.title.toString() + helmet.meta.toString() + helmet.link.toString();
 
   const indexFile = path.resolve("build/index.html");
-  fs.readFile(indexFile, "utf8", (err, data) => {
 
-    console.log("@data", err, data)
-    if (err !== null) {
-      const errMsg = `There is an error: ${err}`;
-      console.error(errMsg);
-      return res.status(500).send(errMsg.toString());
-    }
-        //   .replace("</head>", `${helmet.meta.toString()}</head>`)
-        // .replace("</head>", `${helmet.title.toString()}</head>`)
-        // .replace("</head>", `${helmet.script.toString()}</head>`)
+  if (context.url) {
+    // If the server-side rendering resulted in a redirect
+    res.redirect(301, context.url);
+  } else {
+    fs.readFile(indexFile, "utf8", (err, data) => {
+      if (err !== null) {
+        const errMsg = `There is an error: ${err}`;
+        console.error(errMsg);
+        return res.status(500).send(errMsg.toString());
+      }
 
-    return res.send(
-      data.replace(
-        '<div id="root"></div>',
-        `<div id="root">${reactApp}</div><script language="javascript" src="js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="css/bootstrap.min.css"/>`)
-          .replace("</head>", `${headTags}</head>`)
-    );
-  });
+      const replaceData = data
+        .replace(
+          '<div id="root"></div>',
+          `<div id="root">${reactApp}</div>
+                <script>window.PRELOADED_STATE = ${preloadedState}</script>`
+        )
+        .replace("</head>", `${helmet.meta.toString()}</head>`)
+        .replace("</head>", `${helmet.title.toString()}</head>`)
+        .replace("</head>", `${helmet.script.toString()}</head>`);
+
+      const htmlFormat = `<!DOCTYPE html>
+      <html>
+      <head>
+        ${helmet.title.toString()}
+        ${helmet.meta.toString()}
+        ${helmet.script.toString()}
+      </head>
+      <body>
+        <div id="root">${reactApp}</div>
+        <script>window.PRELOADED_STATE = ${preloadedState}</script>
+      </body>
+    </html>`;
+
+      return res.send(replaceData);
+    });
+  }
 });
 
-router.use(express.static(path.resolve(__dirname, "../build")));
+// Catch all route for SSR
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
 
 app.use(router);
 

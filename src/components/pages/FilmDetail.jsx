@@ -32,12 +32,12 @@ const FilmDetail = () => {
 
   return (
     <>
-      {/* <SEO
+      <SEO
         title={"Films Details"}
         description={"Films Details"}
         name={"Films description"}
         type={"article"}
-      /> */}
+      />
       {loading ? (
         <Loader />
       ) : (
