@@ -10,9 +10,3 @@ const rootReducer = (state, action) => {
 }
 
 export default rootReducer
-
-// const rootReducer = combineReducers({
-//    films: filmsReducers
-// });
-
-// export default rootReducer;

@@ -48,6 +48,7 @@ const Films = () => {
                         <img
                           className="img-fluid home_img"
                           src={o?.primaryImage?.url}
+                          alt={o?.id}
                         />
                         <h6 className="mt-2">{o.titleText.text}</h6>
                         <small className="text-muted">

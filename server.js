@@ -79,18 +79,19 @@ app.get("*", (req, res, next) => {
         .replace("</head>", `${helmet.title.toString()}</head>`)
         .replace("</head>", `${helmet.script.toString()}</head>`);
 
-      const htmlFormat = `<!DOCTYPE html>
-      <html>
-      <head>
-        ${helmet.title.toString()}
-        ${helmet.meta.toString()}
-        ${helmet.script.toString()}
-      </head>
-      <body>
-        <div id="root">${reactApp}</div>
-        <script>window.PRELOADED_STATE = ${preloadedState}</script>
-      </body>
-    </html>`;
+      //to fetch normal html documents
+      //   const htmlFormat = `<!DOCTYPE html>
+      //   <html>
+      //   <head>
+      //     ${helmet.title.toString()}
+      //     ${helmet.meta.toString()}
+      //     ${helmet.script.toString()}
+      //   </head>
+      //   <body>
+      //     <div id="root">${reactApp}</div>
+      //     <script>window.PRELOADED_STATE = ${preloadedState}</script>
+      //   </body>
+      // </html>`;
 
       return res.send(replaceData);
     });

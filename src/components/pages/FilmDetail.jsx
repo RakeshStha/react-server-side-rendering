@@ -56,7 +56,11 @@ const FilmDetail = () => {
                 </div>
                 <div className="row">
                   <div className="col-sm-6">
-                    <img className="img-fluid " src={data?.primaryImage?.url} />
+                    <img
+                      className="img-fluid "
+                      src={data?.primaryImage?.url}
+                      alt={data?.titleText?.text}
+                    />
                   </div>
                   <div className="col-sm-6">
                     <h6 className="mt-2">{data?.titleText?.text}</h6>

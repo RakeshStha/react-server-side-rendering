@@ -6,7 +6,6 @@ import Contact from "./components/pages/Contact";
 import FilmDetail from "./components/pages/FilmDetail";
 import Films from "./components/pages/Films";
 import Navbar from "./components/shared/Navbar";
-import { Config } from "./Config";
 
 function App() {
   return (
